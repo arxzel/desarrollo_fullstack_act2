@@ -1,0 +1,74 @@
+## YAML Template.
+---
+springdoc:
+  swagger-ui:
+      path: /swagger/index.html
+      enabled: true
+      
+server:
+    port: 8083
+    servlet:
+      contextPath: /buscador
+
+#Base de datos postgresql
+#user:
+#  role: sysadmin
+#  alias: fullstackusr
+
+spring:
+  application:
+    name: buscador-service
+  security:
+      user:
+        name: user
+        password: 123
+  #Postgresql Configuration
+  datasource: 
+    # url=jdbc:postgresql://postgres_db:5432/ziggzadtbs
+    url: 'jdbc:postgresql://localhost:4523/buscador_database'
+    username: buscador_admindb
+    password: '@Buscador#_123!'
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    properties:
+      hibernate:
+        dialect: 'org.hibernate.dialect.PostgreSQL10Dialect'
+        jdbc:
+          lob:
+            non_contextual_creation: 'true'
+    hibernate:
+        ddl-auto: none
+    show-sql: 'true'
+
+--- #configuration for eureka client
+eureka:
+  instance:
+    hostname: localhost
+    leaseRenewalIntervalInSeconds: 10
+    health-check-url-path: /actuator/health
+    metadata-map:
+      startup: ${random.int}    #needed to trigger info and endpoint update after restart
+  client:
+    registryFetchIntervalSeconds: 5
+    serviceUrl:
+      defaultZone: ${EUREKA_SERVER:http://localhost:8761/eureka}
+--- #As with Spring Boot 2 most of the endpoints aren’t exposed via http by default, we expose all of them. For production you should carefully choose which endpoints to expose
+management: 
+  endpoints:
+    web:
+      exposure:
+        include: "*"  
+  endpoint:
+    health:
+      show-details: ALWAYS
+
+logging:
+  level:
+    org:
+      springframework:
+        cloud:
+          gateway: DEBUG
+    reactor:
+      netty:
+        http:
+          client: DEBUG

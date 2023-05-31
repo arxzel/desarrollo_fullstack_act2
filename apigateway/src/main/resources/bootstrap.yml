@@ -1,0 +1,58 @@
+## YAML Template.
+---        
+server:
+  port: 8188
+
+spring:
+  application:
+    name: apigateway-service
+  cloud:
+    gateway:
+      #opcional
+      discovery: 
+        locator:
+          enabled: true
+      routes:
+      
+      - id: buscador_service
+        uri: lb://buscador-service
+        predicates:
+        - Path=/buscador/**
+        
+      - id: operador_service
+        uri: lb://operador-service
+        predicates:
+        - Path=/operador/**
+
+--- #configuration for eureka client
+eureka:   
+  instance:
+    hostname: localhost
+    leaseRenewalIntervalInSeconds: 10
+    health-check-url-path: /actuator/health
+    metadata-map:
+      startup: ${random.int}    #needed to trigger info and endpoint update after restart
+  client:
+    registryFetchIntervalSeconds: 5
+    serviceUrl:
+      defaultZone: ${EUREKA_SERVER:http://localhost:8761/eureka}
+--- #As with Spring Boot 2 most of the endpoints aren’t exposed via http by default, we expose all of them. For production you should carefully choose which endpoints to expose
+management: 
+  endpoints:
+    web:
+      exposure:
+        include: "*"  
+  endpoint:
+    health:
+      show-details: ALWAYS
+
+logging:
+  level:
+    org:
+      springframework:
+        cloud:
+          gateway: DEBUG
+    reactor:
+      netty:
+        http:
+          client: DEBUG

@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>net.unir</groupId>
+    <artifactId>actividad2</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <properties>
+        <java.version>17</java.version>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target> 
+        
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding> 
+        
+        <spring-boot.version>2.7.0</spring-boot.version>
+        <spring-boot-maven-plugin.version>2.7.0</spring-boot-maven-plugin.version>
+        <spring-boot-starter-web.version>2.7.0</spring-boot-starter-web.version>
+        
+        
+        <spring-cloud-dependencies.version>2021.0.2</spring-cloud-dependencies.version>
+        
+        <postgres.version>42.3.4</postgres.version>    
+        <java-validation.version>2.0.1.Final</java-validation.version> 
+        <dockerfile-maven-version>1.4.13</dockerfile-maven-version>
+        
+        
+        <org.mapstruct.version>1.4.2.Final</org.mapstruct.version>
+        <org.lombok.version>1.18.24</org.lombok.version>
+        <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
+    </properties>
+    
+     <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud-dependencies.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>  
+    
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-bootstrap</artifactId>
+        </dependency>
+       
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+           
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+            <!--If want exclude junit4 and use only junit5-->
+            <exclusions>
+                <exclusion>
+                    <groupId>org.junit.vintage</groupId>
+                    <artifactId>junit-vintage-engine</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>  
+    </dependencies>
+    
+    <build>
+        <plugins>
+            <!--Tghis plugin generate reports in two differents forma .txt and xml 
+            in test phase when build life cicle is execuite-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M6</version>
+                <configuration>
+                    <useSystemClassLoader>false</useSystemClassLoader>                    
+                </configuration>
+            </plugin>
+            <!--It is the spring-boot repackage goal that repackages the JAR produced 
+            by maven to specify the main class and make it executable using an embedded container-->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>     
+                <version>${spring-boot-maven-plugin.version}</version>      
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>        
+            
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.9.1</version>
+                <configuration>
+                    <locales>en,fr,es</locales>
+                </configuration>
+            </plugin>
+            
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.2.0</version>   
+                <configuration>                   
+                </configuration> 
+            </plugin>
+            
+            <!-- Plugin para dockerizar -->
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>dockerfile-maven-plugin</artifactId>
+                <version>${dockerfile-maven-version}</version>                               
+                <executions>
+                    <execution>                        
+                        <id>build-docker-image</id>
+                        <phase>package</phase>
+                        <goals>                                              
+                            <!--<goal>build</goal>-->
+                            <!--<goal>push</goal>-->
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>                       
+                    <repository>ziggza/microservice-docker-${project.artifactId}</repository>
+                    <tag>${project.version}</tag>
+                    <buildArgs>
+                        <JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
+                    </buildArgs>
+                </configuration>
+            </plugin>
+            
+        </plugins>
+    </build>
+    <modules>
+        <module>eurekaserver</module>
+        <module>apigateway</module>
+        <module>operadormicroservice</module>
+        <module>buscadormicroservice</module>
+    </modules>
+</project>
