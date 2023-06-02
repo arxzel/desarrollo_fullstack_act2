@@ -17,12 +17,12 @@ spring:
       - id: buscador_service
         uri: lb://buscador-service
         predicates:
-        - Path=/buscador/**
+        - Path=/buscador/api/**
         
       - id: operador_service
         uri: lb://operador-service
         predicates:
-        - Path=/operador/**
+        - Path=/operador/api/**
 
 --- #configuration for eureka client
 eureka:   

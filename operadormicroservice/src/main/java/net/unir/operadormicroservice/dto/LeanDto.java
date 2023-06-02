@@ -1,31 +1,24 @@
 package net.unir.operadormicroservice.dto;
 
-import java.io.Serializable;
 import java.util.Date;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Builder;
 import lombok.Data;
-import net.unir.operadormicroservice.model.BookModel;
 
 /**
  * @author Fabian
  *
  */
-@Builder
 @Data
 @Schema(description = "This model represent a loan data to a secure api rest comunication")
-public class LeanCompleteDto implements Serializable {
-	private static final long serialVersionUID = 1L;
 
-	@Schema(name = "id", required = false, example = "88", description = "UUID of préstamo into a system DB")
+public class LeanDto {
+
+	@Schema(name = "id", required = false, example = "1", description = "UUID of préstamo into a system DB")
 	private Long id;
 
-	@Schema(name = "bookId", required = true, example = "13", description = "UUID of the book in the Buscador microsistem")
+	@Schema(name = "bookId", required = true, example = "1", description = "UUID of the book in the Buscador microsistem")
 	private Long bookId;
-	
-	@Schema(name = "book", required = true, description = "Book got from buscador-service")
-	private transient BookModel book;
 	
 	@Schema(name = "devolution", required = true, example = "true", description = "Means if it is a devolution operation, if false, it's a rent operation")
 	private boolean devolution;
@@ -37,5 +30,5 @@ public class LeanCompleteDto implements Serializable {
 	private Date devolutionAt;
 
 	@Schema(name = "client", required = true, example = "", description = "client who makes a loan")
-	private transient ClientDto client;
+	private ClientDto client;
 }

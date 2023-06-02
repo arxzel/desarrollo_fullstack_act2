@@ -142,6 +142,12 @@ public class BookController {
         return ResponseEntity.noContent().build();
     }
     
+    @Operation(summary = "Loan or return a book",
+            description = "This operation is used to change availables books by a loan operation (lean or return)")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "202", description = "LOAN operation OK"),
+        @ApiResponse(responseCode = "500", description = "Internal error")
+    })
     @PatchMapping("/{id}")
     public ResponseEntity<LeanOperation> loanOperation(@PathVariable Long id, @RequestBody LeanOperation operation){
     	LeanOperation response = bookService.leanOperationBook(operation);

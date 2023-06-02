@@ -30,11 +30,11 @@ public class BookUtils {
             bookEntity.setResume(input.getResume());
         }
         
-        if(input.getStockQuantity() == 0){
+        if(input.getStockQuantity() != null){
             bookEntity.setStockQuantity(input.getStockQuantity());
         }
         
-        if(input.getQuantityAvailable() == 0){
+        if(input.getQuantityAvailable() != null){
             bookEntity.setQuantityAvailable(input.getQuantityAvailable());
         }
         

@@ -26,8 +26,8 @@ spring:
   datasource: 
     # url=jdbc:postgresql://postgres_db:5432/ziggzadtbs
     url: 'jdbc:postgresql://localhost:4523/buscador_database'
-    username: buscador_admindb
-    password: '@Buscador#_123!'
+    username: buscador_userdb
+    password: '@Buscador#123'
     driver-class-name: org.postgresql.Driver
   jpa:
     properties:
